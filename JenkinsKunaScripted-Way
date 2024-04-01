@@ -27,7 +27,7 @@ node {
     
 }
 */    
-def SendSlackNotifications (String Buildstatus = STARTED) { 
+def SendSlackNotification (String Buildstatus = STARTED) { 
  // Default values
   def colorName = 'RED'
 
