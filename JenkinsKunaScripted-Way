@@ -61,4 +61,4 @@ if (buildStatus == 'STARTED') {
   slackSend (color: colorCode, message: summary, channel: '#hdfcbank')
 }
    
-}
+
