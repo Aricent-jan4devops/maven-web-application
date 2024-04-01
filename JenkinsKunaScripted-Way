@@ -6,6 +6,8 @@ node {
     properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM('* * * * *')])])
     
     def mavenHome = tool name: "maven3.8.7"
+    try
+      {
     stage ('CheckoutCode') {
     git branch: 'development', credentialsId: '636e1bf1-5e0a-466c-b7c2-ac73e6391d0b', url: 'https://github.com/Aricent-jan4devops/maven-web-application.git'
     }
@@ -26,8 +28,18 @@ node {
 }
     
 }
-*/    
-def SendSlackNotification (String Buildstatus = STARTED) { 
+*/
+catch(e){
+currentBuild.result = "FAILED"
+throw e
+}
+finally{
+sendSlackNotifications(currentBuild.result)
+}
+} //node closing
+def SendSlackNotifications(String Buildstatus = STARTED) { 
+
+  buildStatus =  buildStatus ?: 'SUCCESS'
  // Default values
   def colorName = 'RED'
 
