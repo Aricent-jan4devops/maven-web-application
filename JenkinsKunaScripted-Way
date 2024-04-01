@@ -1,0 +1,31 @@
+node {
+    echo "Job name is : ${env.JOB_NAME}"
+    echo "Build number is : ${env.BUILD_NUMBER}"
+    echo "node name is : ${env.NODE_NAME}"
+    echo "Jenkins home dir is : ${env.JENKINS_HOME}"
+    properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM('* * * * *')])])
+    
+    def mavenHome = tool name: "maven3.8.7"
+    stage ('CheckoutCode') {
+    git branch: 'development', credentialsId: '636e1bf1-5e0a-466c-b7c2-ac73e6391d0b', url: 'https://github.com/Aricent-jan4devops/maven-web-application.git'
+    }
+    stage ('Build') {
+       //  sh "mvn clean package"
+       sh "${mavenHome}/bin/mvn clean package"
+    }
+/*
+    stage ('ExecuteSonarQubeReport') {
+        sh "${mavenHome}/bin/mvn clean sonar:sonar"
+    }
+    stage ('UploadArtifactIntoNexus') {
+        sh "${mavenHome}/bin/mvn clean deploy"
+    }
+    stage ('DeployAppIntoTomcatServer') {
+    sshagent(['ca3cac01-de51-4b8d-91dc-6edb0099ef6c']) {
+        sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@172.31.45.56:/opt/apache-tomcat-9.0.87/webapps/"
+}
+    
+}
+*/    
+    
+}
